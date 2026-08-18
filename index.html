@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Send Robux</title>
+    <link href="./style.css" rel="stylesheet" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Questrial&amp;display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="icon"
+      type="image/png"
+      href="https://static.wikia.nocookie.net/logopedia/images/2/28/400x400ia-75.webp/revision/latest/scale-to-width-down/250?cb=20260412004126"
+    />
+  </head>
+  <body>
+    <div class="robux-page">
+      <div class="rbx-send-overlay" id="rbxSendOverlay">
+        <div class="rbx-send-modal">
+          <div class="rbx-send-header">
+            <div class="rbx-send-title">
+              <img alt="" src="./robux-icon.png" />
+              <span> Send Robux </span>
+            </div>
+            <div class="rbx-send-balance">
+              <img alt="" src="./robux-icon.png" />
+              <span id="rbxSendBalance"> 256 </span>
+            </div>
+            <button
+              aria-label="Close"
+              class="rbx-send-close"
+              id="rbxSendClose"
+              type="button"
+            >
+              &times;
+            </button>
+          </div>
+          <div class="rbx-send-screen" id="rbxSearchScreen">
+            <input
+              autocomplete="off"
+              class="rbx-search-input"
+              id="rbxSearchInput"
+              placeholder="Search"
+              type="text"
+            />
+
+            <div class="rbx-friends-section" id="rbxFriendsSection">
+              <div class="rbx-friends-title">My Friends <span>(91)</span></div>
+
+              <div class="rbx-friends-list" id="rbxFriendsList"></div>
+            </div>
+
+            <div class="rbx-search-results" id="rbxSearchResults"></div>
+          </div>
+          <div
+            class="rbx-send-screen"
+            id="rbxAmountScreen"
+            style="display: none"
+          >
+            <div class="rbx-selected-user">
+              <div class="rbx-selected-avatar">
+                <img alt="" id="rbxSelectedAvatar" src="./default-avatar.png" />
+              </div>
+              <div class="rbx-selected-name" id="rbxSelectedName"></div>
+              <div class="rbx-selected-username" id="rbxSelectedUsername"></div>
+            </div>
+            <div class="rbx-amount-box">
+              <img alt="" src="./robux-icon.png" />
+              <input
+                autocomplete="off"
+                id="rbxAmountInput"
+                inputmode="numeric"
+                placeholder="0"
+                type="text"
+              />
+            </div>
+            <div class="rbx-quick-buttons">
+              <button data-amount="25" type="button">
+                <img alt="" src="./robux-icon.png" />
+                <span> 25 </span>
+              </button>
+              <button data-amount="50" type="button">
+                <img alt="" src="./robux-icon.png" />
+                <span> 50 </span>
+              </button>
+              <button data-amount="100" type="button">
+                <img alt="" src="./robux-icon.png" />
+                <span> 100 </span>
+              </button>
+              <button data-amount="200" type="button">
+                <img alt="" src="./robux-icon.png" />
+                <span> 200 </span>
+              </button>
+            </div>
+            <button class="rbx-next-button" id="rbxNextButton" type="button">
+              Next
+            </button>
+            <div class="rbx-send-note">
+              <div>Robux are sent instantly with no fees.</div>
+              <div>Note: Robux delivery within 3 days</div>
+            </div>
+          </div>
+
+          <div
+            class="rbx-send-screen"
+            id="rbxSuccessScreen"
+            style="display: none"
+          >
+            <div class="rbx-success-wrap">
+              <div class="rbx-success-check">
+                <i class="fa-solid fa-check"></i>
+              </div>
+
+              <div class="rbx-success-title">Success!</div>
+
+              <div class="rbx-success-message">
+                Sent <strong id="rbxSuccessAmount">0</strong> Robux to
+                <span id="rbxSuccessUsername">@username</span>
+              </div>
+
+              <button class="rbx-done-button" id="rbxDoneButton" type="button">
+                Done
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- CLOSE -->
+      <button aria-label="Close" class="close-btn" type="button">
+        <span> </span>
+        <span> </span>
+      </button>
+      <!-- BALANCE / SEND -->
+      <!-- sticky DEYIL -->
+      <div class="balance">
+        <div class="balance-robux">
+          <img alt="Robux" src="./robux-icon.png" />
+          <span id="pageRobuxBalance"> 256 </span>
+        </div>
+        <button class="send-btn" id="openSendBtn" type="button">
+          <i class="fa-solid fa-arrow-up-from-bracket"> </i>
+          <span> Send </span>
+        </button>
+      </div>
+      <main class="robux-container">
+        <!-- =========================
+     SEND ROBUX MODAL
+========================= -->
+        <!-- ========================= -->
+        <!-- BUY ROBUX -->
+        <!-- ========================= -->
+        <h1 class="page-title">Enjoy up to 25% more Robux</h1>
+        <!-- ========================= -->
+        <!-- LIMITED ITEMS -->
+        <!-- ========================= -->
+        <section class="limited-section">
+          <div class="limited-heading">
+            <h2>Limited-time avatar items</h2>
+            <span class="days-badge"> 15 days left </span>
+          </div>
+          <div class="limited-card">
+            <div class="item-preview">
+              <img
+                alt="Gold Crown of Ozymandias"
+                src="https://images.rbxcdn.com/192a7bd92c19b511.gif"
+              />
+            </div>
+            <div class="item-details">
+              <h3>Gold Crown of Ozymandias</h3>
+              <div class="creator">
+                <span> Roblox </span>
+                <span class="verified">
+                  <img
+                    alt="  "
+                    src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiIgZmlsbD0ibm9uZSIgdmlld0JveD0iMCAwIDEyIDEyIj48ZyBjbGlwLXBhdGg9InVybCgjYSkiPjxwYXRoIGZpbGw9IiMwNmYiIGQ9Im0yLjUyMyAwIDkuNDc2IDIuNTM5LTIuNTQgOS40NzYtOS40NzUtMi41NHoiLz48cGF0aCBmaWxsPSIjZjdmN2Y4IiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Im04LjgwNCAzLjc1LjAwMy4wMDNhLjY2LjY2IDAgMCAxIDAgLjkzMkw1LjA2NCA4LjQyOCAzLjE5MyA2LjU1NmEuNjYuNjYgMCAwIDEgMC0uOTMybC4wMDMtLjAwM2EuNjYuNjYgMCAwIDEgLjkzMiAwbC45MzYuOTM2TDcuODcyIDMuNzVhLjY2LjY2IDAgMCAxIC45MzIgMCIgY2xpcC1ydWxlPSJldmVub2RkIi8+PC9nPjxkZWZzPjxjbGlwUGF0aCBpZD0iYSI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTAgMGgxMnYxMkgweiIvPjwvY2xpcFBhdGg+PC9kZWZzPjwvc3ZnPg=="
+                  />
+                </span>
+              </div>
+            </div>
+            <div class="item-purchase">
+              <div class="item-robux">
+                <img alt="Robux" src="./robux-icon.png" />
+                <span> 24,000 </span>
+                <span class="old-price">
+                  <img alt="" src="./robux-icon.png" />
+                  <span> 22,500 </span>
+                </span>
+              </div>
+              <button class="price-btn">$199.99</button>
+            </div>
+          </div>
+        </section>
+        <!-- ========================= -->
+        <!-- ROBUX PACKAGES -->
+        <!-- ========================= -->
+        <section class="packages-section">
+          <h2 class="packages-title">Robux packages</h2>
+          <p class="packages-description">
+            By purchasing Robux, you agree to our Terms of Use, including the
+            arbitration clause and revocation policy.
+          </p>
+          <div class="packages-box">
+            <!-- 11,000 -->
+            <div class="package-row">
+              <div class="package-left">
+                <div class="current-price">
+                  <img alt="" src="./robux-icon.png" />
+                  <span> 11,000 </span>
+                </div>
+                <div class="old-price package-old">
+                  <img alt="" src="./robux-icon.png" />
+                  <span> 10,000 </span>
+                </div>
+              </div>
+              <button class="package-price">$99.99</button>
+            </div>
+            <!-- 5,250 -->
+            <div class="package-row">
+              <div class="package-left">
+                <div class="current-price">
+                  <img alt="" src="./robux-icon.png" />
+                  <span> 5,250 </span>
+                </div>
+                <div class="old-price package-old">
+                  <img alt="" src="./robux-icon.png" />
+                  <span> 4,500 </span>
+                </div>
+              </div>
+              <button class="package-price">$49.99</button>
+            </div>
+            <!-- 3,625 -->
+            <div class="package-row">
+              <div class="package-left">
+                <div class="current-price">
+                  <img alt="" src="./robux-icon.png" />
+                  <span> 3,625 </span>
+                </div>
+                <div class="old-price package-old">
+                  <img alt="" src="./robux-icon.png" />
+                  <span> 3,150 </span>
+                </div>
+              </div>
+              <button class="package-price">$34.99</button>
+            </div>
+            <!-- 2,000 -->
+            <div class="package-row">
+              <div class="package-left">
+                <div class="current-price">
+                  <img alt="" src="./robux-icon.png" />
+                  <span> 2,000 </span>
+                </div>
+                <div class="old-price package-old">
+                  <img alt="" src="./robux-icon.png" />
+                  <span> 1,700 </span>
+                </div>
+              </div>
+              <button class="package-price">$19.99</button>
+            </div>
+            <!-- 1,500 -->
+            <div class="package-row">
+              <div class="package-left">
+                <div class="current-price">
+                  <img alt="" src="./robux-icon.png" />
+                  <span> 1,500 </span>
+                </div>
+                <div class="old-price package-old">
+                  <img alt="" src="./robux-icon.png" />
+                  <span> 1,200 </span>
+                </div>
+              </div>
+              <button class="package-price">$14.99</button>
+            </div>
+            <!-- 1,000 -->
+            <div class="package-row">
+              <div class="package-left">
+                <div class="current-price">
+                  <img alt="" src="./robux-icon.png" />
+                  <span> 1,000 </span>
+                </div>
+                <div class="old-price package-old">
+                  <img alt="" src="./robux-icon.png" />
+                  <span> 800 </span>
+                </div>
+                <span class="for-you">
+                  <span class="for-you-icon">
+                    <i class="fa-solid fa-star"> </i>
+                  </span>
+                  For you
+                </span>
+              </div>
+              <button class="package-price selected">$9.99</button>
+            </div>
+            <!-- 500 -->
+            <div class="package-row">
+              <div class="package-left">
+                <div class="current-price">
+                  <img alt="" src="./robux-icon.png" />
+                  <span> 500 </span>
+                </div>
+                <div class="old-price package-old">
+                  <img alt="" src="./robux-icon.png" />
+                  <span> 400 </span>
+                </div>
+              </div>
+              <button class="package-price">$4.99</button>
+            </div>
+          </div>
+        </section>
+        <!-- ========================= -->
+        <!-- NEW ON ROBLOX -->
+        <!-- ========================= -->
+        <section class="new-roblox-section">
+          <div class="new-heading">
+            <div class="new-heading-left">
+              <img alt="" class="new-heading-icon" src="./plus.png" />
+              <h2>New on Roblox</h2>
+            </div>
+            <a class="learn-more" href="#"> Learn more </a>
+          </div>
+          <div class="new-cards">
+            <!-- PLUS -->
+            <article class="new-card">
+              <div class="new-card-top">
+                <h3>Roblox Plus</h3>
+                <div class="new-card-price">$4.99</div>
+              </div>
+              <div class="feature-list">
+                <div class="feature">
+                  <span class="feature-icon tag-icon">
+                    <i class="fa-solid fa-tag"> </i>
+                  </span>
+                  <span>
+                    10% off in-game items,
+                    <br />
+                    avatars, and more
+                  </span>
+                </div>
+                <div class="feature">
+                  <span class="feature-icon">
+                    <i class="fa-solid fa-gamepad"> </i>
+                  </span>
+                  <span> Free private servers </span>
+                </div>
+                <div class="feature">
+                  <img alt="" class="feature-robux" src="./robux-icon.png" />
+                  <span> Send Robux for free </span>
+                </div>
+              </div>
+              <button class="monthly-btn">$4.99/month</button>
+            </article>
+            <!-- PLUS 500 -->
+            <article class="new-card">
+              <div class="new-card-top">
+                <h3>Plus 500</h3>
+                <div class="new-card-prices">
+                  <span class="striked"> $9.98 </span>
+                  <span> $8.99 </span>
+                </div>
+              </div>
+              <div class="feature-list">
+                <div class="feature">
+                  <img alt="" class="feature-robux" src="./plus.png" />
+                  <span> Everything in Plus </span>
+                </div>
+                <div class="feature">
+                  <img alt="" class="feature-robux" src="./robux-icon.png" />
+                  <span> +500 Robux every month </span>
+                </div>
+                <div class="feature">
+                  <span class="feature-icon">
+                    <i class="fa-solid fa-piggy-bank"> </i>
+                  </span>
+                  <span> $9.98 total value </span>
+                </div>
+              </div>
+              <button class="monthly-btn">$8.99/month</button>
+            </article>
+            <!-- PLUS 1000 -->
+            <article class="new-card">
+              <div class="new-card-top">
+                <h3>Plus 1000</h3>
+                <div class="new-card-prices">
+                  <span class="striked"> $14.98 </span>
+                  <span> $12.99 </span>
+                </div>
+              </div>
+              <div class="feature-list">
+                <div class="feature">
+                  <img alt="" class="feature-robux" src="./plus.png" />
+                  <span> Everything in Plus </span>
+                </div>
+                <div class="feature">
+                  <img alt="" class="feature-robux" src="./robux-icon.png" />
+                  <span> +1,000 Robux every month </span>
+                </div>
+                <div class="feature">
+                  <span class="feature-icon">
+                    <i class="fa-solid fa-piggy-bank"> </i>
+                  </span>
+                  <span> $14.98 total value </span>
+                </div>
+              </div>
+              <button class="monthly-btn">$12.99/month</button>
+            </article>
+            <button class="cards-next" type="button">
+              <i class="fa-solid fa-chevron-right"> </i>
+            </button>
+          </div>
+        </section>
+        <!-- ========================= -->
+        <!-- FAQ -->
+        <!-- ========================= -->
+        <section class="faq-section">
+          <h2 class="faq-title">FAQ</h2>
+          <!-- FAQ 1 -->
+          <div class="faq-item active">
+            <button class="faq-question" type="button">
+              <span> What are Robux? </span>
+              <span class="faq-arrow">
+                <i class="fa-solid fa-angle-down"> </i>
+              </span>
+            </button>
+          </div>
+          <!-- FAQ 2 -->
+          <div class="faq-item active">
+            <button class="faq-question" type="button">
+              <span> Where are my Robux? </span>
+              <span class="faq-arrow">
+                <i class="fa-solid fa-angle-down"> </i>
+              </span>
+            </button>
+          </div>
+          <!-- FAQ 3 -->
+          <div class="faq-item active">
+            <button class="faq-question" type="button">
+              <span> Do Robux expire? </span>
+              <span class="faq-arrow">
+                <i class="fa-solid fa-angle-down"> </i>
+              </span>
+            </button>
+          </div>
+          <!-- FAQ 4 -->
+          <div class="faq-item active">
+            <button class="faq-question" id="howToRedeem" type="button">
+              <span> How to redeem your gift card? </span>
+              <span class="faq-arrow">
+                <i class="fa-solid fa-angle-down"> </i>
+              </span>
+            </button>
+          </div>
+        </section>
+      </main>
+    </div>
+    <div class="rbx-redeem-overlay" id="redeemOverlay">
+      <div class="rbx-redeem-modal">
+        <div class="rbx-redeem-header">
+          <h2>How to redeem</h2>
+
+          <div class="redeem-header-actions">
+            <button type="button" id="redeemRefresh" aria-label="Reset Robux">
+              <i class="fa-solid fa-rotate-right"></i>
+            </button>
+
+            <button type="button" id="redeemClose" aria-label="Close">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+        </div>
+        <p>Enter the amount of Robux you want to add to your demo balance.</p>
+        <div class="rbx-redeem-input">
+          <img alt="" src="./robux-icon.png" />
+          <input
+            autocomplete="off"
+            id="redeemAmount"
+            inputmode="numeric"
+            placeholder="0"
+            type="text"
+          />
+        </div>
+        <button class="rbx-redeem-button" id="redeemConfirm" type="button">
+          Redeem
+        </button>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
