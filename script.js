@@ -50,7 +50,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* =========================================================
      SAFE FALLBACK IMAGE
-     heç bir fayldan asılı deyil
   ========================================================= */
 
   const FALLBACK_AVATAR =
@@ -135,7 +134,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* =========================================================
      FRIENDS AREA
-     HTML-də yoxdursa JS özü yaradır
   ========================================================= */
 
   let friendsSection =
@@ -162,7 +160,6 @@ document.addEventListener("DOMContentLoaded", () => {
     friendsSection.className =
       "rbx-friends-section";
 
-
     friendsSection.innerHTML = `
       <div class="rbx-friends-title">
         My Friends <span>(91)</span>
@@ -173,7 +170,6 @@ document.addEventListener("DOMContentLoaded", () => {
         id="rbxFriendsList"
       ></div>
     `;
-
 
     if (searchResults) {
       searchScreen.insertBefore(
@@ -186,7 +182,6 @@ document.addEventListener("DOMContentLoaded", () => {
       );
     }
 
-
     friendsList =
       document.getElementById(
         "rbxFriendsList"
@@ -196,7 +191,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* =========================================================
      FRIENDS CSS
-     JS özü əlavə edir ki HTML/CSS-də başqa iş qalmasın
   ========================================================= */
 
   if (
@@ -463,26 +457,34 @@ document.addEventListener("DOMContentLoaded", () => {
     let multiplier = 1;
 
     if (text.endsWith("T")) {
+
       multiplier =
         1_000_000_000_000;
+
       text =
         text.slice(0, -1);
 
     } else if (text.endsWith("B")) {
+
       multiplier =
         1_000_000_000;
+
       text =
         text.slice(0, -1);
 
     } else if (text.endsWith("M")) {
+
       multiplier =
         1_000_000;
+
       text =
         text.slice(0, -1);
 
     } else if (text.endsWith("K")) {
+
       multiplier =
         1_000;
+
       text =
         text.slice(0, -1);
     }
@@ -536,8 +538,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================================
-     LOAD ALL FRIEND AVATARS
-     ONLY ONE REQUEST
+     LOAD FRIEND AVATARS
+     DIRECT ROBLOX API
+     NO RENDER
   ========================================================= */
 
   async function loadFriendAvatars() {
@@ -548,10 +551,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
 
+      const ids =
+        myFriends
+          .map(friend =>
+            String(friend.id)
+          )
+          .join(",");
+
+      const url =
+        "https://thumbnails.roblox.com/v1/users/avatar-headshot" +
+        "?userIds=" +
+        encodeURIComponent(ids) +
+        "&size=150x150" +
+        "&format=Png" +
+        "&isCircular=true";
+
       const response =
         await fetch(
-          "/api/roblox-friends",
+          url,
           {
+            method: "GET",
             cache: "no-store"
           }
         );
@@ -567,32 +586,37 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (
         Array.isArray(
-          data?.avatars
+          data?.data
         )
       ) {
 
-        data.avatars.forEach(
+        data.data.forEach(
           (item) => {
 
             if (
               item &&
-              item.id &&
+              item.targetId &&
               item.imageUrl
             ) {
 
               map[
-                String(item.id)
+                String(item.targetId)
               ] =
                 item.imageUrl;
             }
-
           }
         );
       }
 
       return map;
 
-    } catch {
+    } catch (error) {
+
+      console.error(
+        "Friend avatar error:",
+        error
+      );
+
       return {};
     }
   }
@@ -610,8 +634,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     friendsList.innerHTML =
       "";
-
-    /* FIRST CREATE UI */
 
     const elements =
       new Map();
@@ -705,6 +727,7 @@ document.addEventListener("DOMContentLoaded", () => {
           () => {
 
             selectUser({
+
               id:
                 friend.id,
 
@@ -724,13 +747,9 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
-    /* THEN ONE REQUEST FOR ALL */
-
     const avatarMap =
       await loadFriendAvatars();
 
-
-    /* APPLY RESULTS */
 
     myFriends.forEach(
       (friend) => {
@@ -757,7 +776,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
           element.avatar.src =
             imageUrl;
-
         }
       }
     );
@@ -785,7 +803,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       selectedAvatar.alt =
         "";
-
     }
 
 
@@ -794,7 +811,6 @@ document.addEventListener("DOMContentLoaded", () => {
       selectedName.textContent =
         user.displayName ||
         user.username;
-
     }
 
 
@@ -803,7 +819,6 @@ document.addEventListener("DOMContentLoaded", () => {
       selectedUsername.textContent =
         "@" +
         user.username;
-
     }
 
 
@@ -811,7 +826,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       searchScreen.style.display =
         "none";
-
     }
 
 
@@ -819,7 +833,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       amountScreen.style.display =
         "block";
-
     }
 
 
@@ -827,7 +840,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       successScreen.style.display =
         "none";
-
     }
 
 
@@ -842,7 +854,6 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         50
       );
-
     }
   }
 
@@ -856,8 +867,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (loadingOverlay) {
 
       loadingOverlay.remove();
-      loadingOverlay = null;
 
+      loadingOverlay =
+        null;
     }
 
     sending = false;
@@ -870,7 +882,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       nextButton.textContent =
         "Send Robux";
-
     }
 
 
@@ -878,7 +889,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       searchScreen.style.display =
         "block";
-
     }
 
 
@@ -886,7 +896,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       amountScreen.style.display =
         "none";
-
     }
 
 
@@ -894,7 +903,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       successScreen.style.display =
         "none";
-
     }
 
 
@@ -902,7 +910,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       searchInput.value =
         "";
-
     }
 
 
@@ -910,7 +917,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       searchResults.innerHTML =
         "";
-
     }
 
 
@@ -918,7 +924,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       amountInput.value =
         "";
-
     }
 
 
@@ -930,7 +935,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       friendsSection.style.display =
         "block";
-
     }
   }
 
@@ -1008,7 +1012,6 @@ document.addEventListener("DOMContentLoaded", () => {
       ) {
 
         closeSend();
-
       }
     }
   );
@@ -1037,7 +1040,6 @@ document.addEventListener("DOMContentLoaded", () => {
       ) {
 
         closeSend();
-
       }
 
 
@@ -1050,14 +1052,13 @@ document.addEventListener("DOMContentLoaded", () => {
         redeemOverlay.classList.remove(
           "rbx-open"
         );
-
       }
     }
   );
 
 
   /* =========================================================
-     SEARCH
+     SEARCH INPUT
   ========================================================= */
 
   searchInput?.addEventListener(
@@ -1082,7 +1083,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
           friendsSection.style.display =
             "block";
-
         }
 
         return;
@@ -1093,7 +1093,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         friendsSection.style.display =
           "none";
-
       }
 
 
@@ -1121,9 +1120,11 @@ document.addEventListener("DOMContentLoaded", () => {
       searchTimer =
         setTimeout(
           () => {
+
             searchUser(
               username
             );
+
           },
           300
         );
@@ -1133,20 +1134,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* =========================================================
      SEARCH USER
+     DIRECT ROBLOX API
+     NO RENDER
   ========================================================= */
 
-  async function searchUser(
-    username
-  ) {
+  async function searchUser(username) {
 
     try {
 
+      /*
+        STEP 1:
+        Username -> Roblox User ID
+      */
+
       const response =
         await fetch(
-          "/api/roblox-user",
+          "https://users.roblox.com/v1/usernames/users",
           {
-            method:
-              "POST",
+            method: "POST",
 
             headers: {
               "Content-Type":
@@ -1155,22 +1160,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
             body:
               JSON.stringify({
-                username
+                usernames: [username],
+                excludeBannedUsers: false
               })
           }
         );
+
+
+      if (!response.ok) {
+        throw new Error(
+          "Roblox users API error"
+        );
+      }
 
 
       const data =
         await response.json();
 
 
-      if (!response.ok) {
-        throw new Error();
-      }
-
-
-      if (!data.user) {
+      if (
+        !data.data ||
+        !Array.isArray(data.data) ||
+        data.data.length === 0
+      ) {
 
         searchResults.innerHTML = `
           <div class="rbx-search-status">
@@ -1182,11 +1194,106 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
 
+      const robloxUser =
+        data.data[0];
+
+
+      /*
+        STEP 2:
+        User ID -> Avatar
+      */
+
+      let avatar =
+        FALLBACK_AVATAR;
+
+
+      try {
+
+        const avatarResponse =
+          await fetch(
+            "https://thumbnails.roblox.com/v1/users/avatar-headshot" +
+            "?userIds=" +
+            encodeURIComponent(
+              String(
+                robloxUser.id
+              )
+            ) +
+            "&size=150x150" +
+            "&format=Png" +
+            "&isCircular=true",
+            {
+              method: "GET",
+              cache: "no-store"
+            }
+          );
+
+
+        if (
+          avatarResponse.ok
+        ) {
+
+          const avatarData =
+            await avatarResponse.json();
+
+
+          if (
+            Array.isArray(
+              avatarData?.data
+            ) &&
+            avatarData.data[0] &&
+            avatarData.data[0].imageUrl
+          ) {
+
+            avatar =
+              avatarData.data[0].imageUrl;
+          }
+        }
+
+      } catch (avatarError) {
+
+        console.warn(
+          "Avatar could not be loaded:",
+          avatarError
+        );
+      }
+
+
+      /*
+        STEP 3:
+        Create our user object
+      */
+
+      const user = {
+
+        id:
+          String(
+            robloxUser.id
+          ),
+
+        username:
+          robloxUser.name,
+
+        displayName:
+          robloxUser.displayName ||
+          robloxUser.name,
+
+        avatar:
+          avatar
+      };
+
+
       renderSearchUser(
-        data.user
+        user
       );
 
-    } catch {
+
+    } catch (error) {
+
+      console.error(
+        "Roblox search error:",
+        error
+      );
+
 
       searchResults.innerHTML = `
         <div class="rbx-search-status">
@@ -1296,7 +1403,6 @@ document.addEventListener("DOMContentLoaded", () => {
         selectUser(
           user
         );
-
       }
     );
   }
@@ -1330,10 +1436,8 @@ document.addEventListener("DOMContentLoaded", () => {
               );
 
             amountInput.focus();
-
           }
         );
-
       }
     );
 
@@ -1361,6 +1465,7 @@ document.addEventListener("DOMContentLoaded", () => {
           /[KMBT]/g
         );
 
+
       if (
         suffix &&
         suffix.length > 1
@@ -1380,6 +1485,7 @@ document.addEventListener("DOMContentLoaded", () => {
             index + 1
           );
       }
+
 
       amountInput.value =
         value;
@@ -1404,15 +1510,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
       event.preventDefault();
 
+
       const value =
         amountInput.value.trim();
+
 
       if (!value) {
         return;
       }
 
+
       const amount =
         parseRobux(value);
+
 
       if (
         !Number.isFinite(amount) ||
@@ -1420,6 +1530,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ) {
         return;
       }
+
 
       amountInput.value =
         formatRobux(amount);
@@ -1440,19 +1551,23 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+
     const modal =
       sendOverlay.querySelector(
         ".rbx-send-modal"
       );
 
+
     if (!modal) {
       return;
     }
+
 
     loadingOverlay =
       document.createElement(
         "div"
       );
+
 
     loadingOverlay.className =
       "rbx-loading-overlay";
@@ -1490,9 +1605,7 @@ document.addEventListener("DOMContentLoaded", () => {
   ) {
 
     const style =
-      document.createElement(
-        "style"
-      );
+      document.createElement("style");
 
     style.id =
       "sendLoadingCSS";
@@ -1531,6 +1644,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       @keyframes rbxSpin {
+
         from {
           transform: rotate(0deg);
         }
@@ -1571,9 +1685,11 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
+
       if (!selectedUser) {
         return;
       }
+
 
       const amount =
         parseRobux(
@@ -1656,7 +1772,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             userBalances =
               {};
-
           }
 
 
@@ -1682,7 +1797,6 @@ document.addEventListener("DOMContentLoaded", () => {
               formatRobux(
                 amount
               );
-
           }
 
 
@@ -1691,7 +1805,6 @@ document.addEventListener("DOMContentLoaded", () => {
             successUsername.textContent =
               "@" +
               selectedUser.username;
-
           }
 
 
@@ -1701,7 +1814,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             loadingOverlay =
               null;
-
           }
 
 
@@ -1750,9 +1862,12 @@ document.addEventListener("DOMContentLoaded", () => {
         "rbx-open"
       );
 
+
       if (redeemAmount) {
-        redeemAmount.value = "";
+        redeemAmount.value =
+          "";
       }
+
 
       setTimeout(
         () => {
@@ -1771,7 +1886,6 @@ document.addEventListener("DOMContentLoaded", () => {
       redeemOverlay?.classList.remove(
         "rbx-open"
       );
-
     }
   );
 
@@ -1788,9 +1902,7 @@ document.addEventListener("DOMContentLoaded", () => {
         redeemOverlay.classList.remove(
           "rbx-open"
         );
-
       }
-
     }
   );
 
@@ -1803,16 +1915,19 @@ document.addEventListener("DOMContentLoaded", () => {
         redeemAmount.value
           .toUpperCase();
 
+
       value =
         value.replace(
           /[^0-9KMBT.,]/g,
           ""
         );
 
+
       const suffix =
         value.match(
           /[KMBT]/g
         );
+
 
       if (
         suffix &&
@@ -1834,6 +1949,7 @@ document.addEventListener("DOMContentLoaded", () => {
           );
       }
 
+
       redeemAmount.value =
         value;
     }
@@ -1851,17 +1967,22 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
+
       event.preventDefault();
+
 
       const value =
         redeemAmount.value.trim();
+
 
       if (!value) {
         return;
       }
 
+
       const amount =
         parseRobux(value);
+
 
       if (
         !Number.isFinite(amount) ||
@@ -1869,6 +1990,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ) {
         return;
       }
+
 
       redeemAmount.value =
         formatRobux(amount);
@@ -1884,6 +2006,7 @@ document.addEventListener("DOMContentLoaded", () => {
         parseRobux(
           redeemAmount.value
         );
+
 
       if (
         !Number.isFinite(amount) ||
@@ -1904,6 +2027,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
       if (redeemAmount) {
+
         redeemAmount.value =
           "";
       }
@@ -1930,16 +2054,21 @@ document.addEventListener("DOMContentLoaded", () => {
           event.preventDefault();
           event.stopPropagation();
 
+
           balance = 0;
+
 
           localStorage.setItem(
             "demoRobuxBalance",
             "0"
           );
 
+
           updateBalance();
 
+
           if (redeemAmount) {
+
             redeemAmount.value =
               "";
           }
@@ -1955,6 +2084,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   window.getDemoRobuxBalance =
     () => balance;
+
 
   window.resetDemoRobuxBalance =
     () => {
